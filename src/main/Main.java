@@ -5,6 +5,7 @@ import engine.render.Model;
 import engine.render.Renderer;
 import engine.shaders.BasicShader;
 
+//main class
 public class Main {
     public static final int WIDTH = 800, HEIGHT = 600, FPS = 60;
     public static Window window = new Window(WIDTH, HEIGHT, FPS, "fl1cksh0t OpenGL");
