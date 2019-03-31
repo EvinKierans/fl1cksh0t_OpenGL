@@ -1,11 +1,16 @@
 package engine.shaders;
 
+import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
-
+import utils.joml.Vector4f;
+import utils.joml.Matrix4f;
+import utils.joml.Matrix4f;
+import utils.joml.Vector3f;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.FloatBuffer;
 
 public abstract class Shader {
     private int vertexShaderID, fragmentShaderID, programID;
@@ -48,13 +53,8 @@ public abstract class Shader {
 
         if(GL20.glGetProgrami(programID, GL20.GL_VALIDATE_STATUS) == GL11.GL_FALSE ) {
             System.err.println("ERROR: Program Validating - " + GL20.glGetShaderInfoLog(programID));
+            System.exit(-1);
         }
-    }
-
-    public abstract void bindAllAttributes();
-
-    public void bindAttribute(int index, String location) {
-        GL20.glBindAttribLocation(programID, index, location);
     }
 
     public void bind() {
@@ -69,12 +69,38 @@ public abstract class Shader {
         GL20.glDeleteProgram(programID);
     }
 
-    public String readFile(String file) {
-        BufferedReader reader = null;
-        StringBuilder string = new StringBuilder();
+    protected abstract void bindAllAttributes();
 
+    public void bindAttribute(int attribute, String variableName) {
+        GL20.glBindAttribLocation(programID, attribute, variableName);
+    }
+
+    protected abstract void getAllUniforms();
+
+    protected int getUniform(String name) {
+        return GL20.glGetUniformLocation(programID, name);
+    }
+
+    protected void loadFloatUniform(int location, float value) {
+        GL20.glUniform1f(location, value);
+    }
+    protected void loadIntUniform(int location, int value) {
+        GL20.glUniform1i(location, value);
+    }
+    protected void loadVectorUniform(int location, Vector3f value) {
+        GL20.glUniform3f(location, value.x, value.y, value.z);
+    }
+    protected void loadMatrixUniform(int location, Matrix4f value) {
+        FloatBuffer buffer = BufferUtils.createFloatBuffer(16);
+        buffer.get();
+        buffer.flip();
+        GL20.glUniformMatrix4fv(location, false, buffer);
+    }
+
+    public String readFile(String file) {
+        StringBuilder string = new StringBuilder();
         try{
-            reader = new BufferedReader(new FileReader(file));
+            BufferedReader reader = new BufferedReader(new FileReader(file));
             String line;
             while((line = reader.readLine()) != null){
                 string.append(line).append("\n");

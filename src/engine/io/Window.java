@@ -1,11 +1,12 @@
 package engine.io;
 
+
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
-import utils.Vector3f;
+import utils.joml.Vector3f;
 
 import java.nio.DoubleBuffer;
 
